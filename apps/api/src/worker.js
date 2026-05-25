@@ -89,7 +89,8 @@ async function generateJobAudio(jobId, job, preparedQuestions) {
 
   console.log(`[worker] Generating TTS audio for job ${jobId}…`);
 
-  const introText = `Welcome to the ${job.subcategory || job.category} quiz! Get ready for ${preparedQuestions.length} exciting questions! Let's go!`;
+  const introText = job.introMessage?.trim()
+    || `Welcome to the ${job.subcategory || job.category} quiz! Get ready for ${preparedQuestions.length} exciting questions! Let's go!`;
   if (await generateSpeech(introText, path.join(audioJobDir, "intro.mp3")))
     audioFiles.intro = `/audio/${jobId}/intro.mp3`;
 
@@ -125,7 +126,8 @@ async function generateJobAudio(jobId, job, preparedQuestions) {
       audioFiles[`q${i}funny`] = `/audio/${jobId}/q${i}funny.mp3`;
   }
 
-  const outroText = "Wow, you made it through the whole quiz! Amazing effort! If you enjoyed this please smash that subscribe button and hit the bell icon so you never miss a quiz! See you in the next one!";
+  const outroText = job.outroMessage?.trim()
+    || "Wow, you made it through the whole quiz! Amazing effort! If you enjoyed this please smash that subscribe button and hit the bell icon so you never miss a quiz! See you in the next one!";
   if (await generateSpeech(outroText, path.join(audioJobDir, "outro.mp3")))
     audioFiles.outro = `/audio/${jobId}/outro.mp3`;
 
@@ -245,6 +247,7 @@ async function renderJob(jobId) {
     audioDurations,
     backgroundStyle: job.backgroundStyle ?? "particles",
     music:           job.music           ?? "none",
+    timingSettings:  job.timingSettings  ?? {},
     apiBase:         "http://localhost:4001",
   };
 

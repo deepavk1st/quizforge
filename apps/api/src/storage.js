@@ -55,6 +55,9 @@ function rowToVideo(row) {
     revealAnswer:    Boolean(row.reveal_answer),
     backgroundStyle: row.background_style ?? "particles",
     music:           row.music            ?? "none",
+    timingSettings:  safeJson(row.timing_settings, {}),
+    introMessage:    row.intro_message    ?? "",
+    outroMessage:    row.outro_message    ?? "",
     status:          row.status,
     filePath:        row.file_path  ?? null,
     publicUrl:       row.public_url ?? null,
@@ -244,8 +247,9 @@ export function createVideoJob(config) {
   const { lastInsertRowid } = db.prepare(`
     INSERT INTO video_jobs
       (category, subcategory, theme, question_count, question_time,
-       avoid_days, reveal_answer, background_style, music, status, created_at)
-    VALUES (?,?,?,?,?,?,?,?,?,'queued',?)
+       avoid_days, reveal_answer, background_style, music,
+       timing_settings, intro_message, outro_message, status, created_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'queued',?)
   `).run(
     config.category,
     config.subcategory      || "",
@@ -256,6 +260,9 @@ export function createVideoJob(config) {
     config.revealAnswer ? 1 : 0,
     config.backgroundStyle  || "particles",
     config.music            || "none",
+    JSON.stringify(config.timingSettings ?? {}),
+    config.introMessage     || "",
+    config.outroMessage     || "",
     new Date().toISOString(),
   );
   return rowToVideo(db.prepare("SELECT * FROM video_jobs WHERE id = ?").get(lastInsertRowid));
@@ -270,6 +277,9 @@ const VIDEO_FIELD_MAP = {
   completedAt:     "completed_at",
   backgroundStyle: "background_style",
   music:           "music",
+  timingSettings:  "timing_settings",
+  introMessage:    "intro_message",
+  outroMessage:    "outro_message",
 };
 
 export function updateVideoJob(id, updates) {
@@ -283,8 +293,8 @@ export function updateVideoJob(id, updates) {
     if (updates[camel] === undefined) continue;
     sets.push(`${snake} = ?`);
     vals.push(
-      camel === "questionIds"
-        ? JSON.stringify(updates.questionIds)
+      camel === "questionIds" || camel === "timingSettings"
+        ? JSON.stringify(updates[camel])
         : updates[camel]
     );
   }
@@ -356,4 +366,40 @@ export function getStats() {
     completedVideos: complete,
     byCategory,
   };
+}
+
+/* ── Templates ───────────────────────────────────────────── */
+function rowToTemplate(row) {
+  if (!row) return null;
+  return { id: row.id, name: row.name, settings: safeJson(row.settings, {}), createdAt: row.created_at };
+}
+
+export function getTemplates() {
+  return db.prepare("SELECT * FROM templates ORDER BY name COLLATE NOCASE").all().map(rowToTemplate);
+}
+
+export function createTemplate(name, settings) {
+  if (!name?.trim()) throw new Error("Template name is required");
+  const { lastInsertRowid } = db.prepare(
+    "INSERT INTO templates (name, settings, created_at) VALUES (?,?,?)"
+  ).run(name.trim(), JSON.stringify(settings ?? {}), new Date().toISOString());
+  return rowToTemplate(db.prepare("SELECT * FROM templates WHERE id = ?").get(lastInsertRowid));
+}
+
+export function updateTemplate(id, name, settings) {
+  if (!db.prepare("SELECT id FROM templates WHERE id = ?").get(id))
+    throw new Error(`Template ${id} not found`);
+  const fields = [];
+  const vals   = [];
+  if (name !== undefined)     { fields.push("name = ?");     vals.push(name.trim()); }
+  if (settings !== undefined) { fields.push("settings = ?"); vals.push(JSON.stringify(settings)); }
+  if (fields.length)
+    db.prepare(`UPDATE templates SET ${fields.join(", ")} WHERE id = ?`).run(...vals, id);
+  return rowToTemplate(db.prepare("SELECT * FROM templates WHERE id = ?").get(id));
+}
+
+export function deleteTemplate(id) {
+  if (!db.prepare("SELECT id FROM templates WHERE id = ?").get(id))
+    throw new Error(`Template ${id} not found`);
+  db.prepare("DELETE FROM templates WHERE id = ?").run(id);
 }

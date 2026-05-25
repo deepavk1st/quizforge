@@ -19,6 +19,15 @@ export type ThemeName = "neon" | "sunset" | "ocean" | "forest" | "galaxy" | "can
 export type BackgroundStyle = "particles" | "geometric" | "waves" | "matrix";
 export type MusicTrack = "none" | "upbeat" | "chill" | "dramatic" | "energetic" | "lofi";
 
+export interface TimingSettings {
+  /** Extra seconds of silence inserted between each option read (default 0) */
+  pauseBetweenOptions?: number;
+  /** Seconds gap after the last option is read before the timer starts (default 0.67) */
+  pauseBeforeTimer?: number;
+  /** Seconds to hold the revealed answer on screen after funny TTS finishes (default 2.5) */
+  answerHold?: number;
+}
+
 export interface VideoInputProps {
   questions: Question[];
   theme: ThemeName;
@@ -37,6 +46,7 @@ export interface VideoInputProps {
     intro?: number;
     outro?: number;
   };
+  timingSettings?: TimingSettings;
   backgroundStyle?: BackgroundStyle;
   music?: MusicTrack;
   apiBase?: string;

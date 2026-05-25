@@ -11,12 +11,12 @@ import {
   Easing,
 } from "remotion";
 import type { ThemeConfig } from "../themes";
-import type { Question, BackgroundStyle } from "../types";
+import type { Question, BackgroundStyle, TimingSettings } from "../types";
 import { BackgroundEffects } from "../components/BackgroundEffects";
 import { ProgressBar } from "../components/ProgressBar";
 import { TimerRing } from "../components/TimerRing";
 import { AnswerOption } from "../components/AnswerOption";
-import { Q_TTS_START, TIMER_GAP, DING_OFFSET, ANSWER_BUFFER, FADE_OUT } from "../Root";
+import { Q_TTS_START, TIMER_GAP, DING_OFFSET, ANSWER_BUFFER, FADE_OUT, FPS } from "../Root";
 
 interface Props {
   question: Question;
@@ -37,6 +37,7 @@ interface Props {
   audioFiles?: Record<string, string>;
   apiBase?: string;
   backgroundStyle?: BackgroundStyle;
+  timingSettings?: TimingSettings;
 }
 
 const LABELS = ["A", "B", "C", "D"];
@@ -56,9 +57,15 @@ export const QuestionScene: React.FC<Props> = ({
   audioFiles = {},
   apiBase = "http://localhost:4001",
   backgroundStyle = "particles",
+  timingSettings,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+
+  /* ── Resolve timing overrides ── */
+  const optPauseFrames  = Math.round((timingSettings?.pauseBetweenOptions ?? 0) * fps);
+  const timerGapFrames  = Math.round((timingSettings?.pauseBeforeTimer    ?? TIMER_GAP / FPS) * fps);
+  const ansBufferFrames = Math.round((timingSettings?.answerHold          ?? ANSWER_BUFFER / FPS) * fps);
 
   /* ── Frame markers ─────────────────────────────────────────────────────────
    *
@@ -76,13 +83,13 @@ export const QuestionScene: React.FC<Props> = ({
   let optCursor = Q_TTS_START + Math.ceil(qTtsDuration * fps);
   for (let i = 0; i < 4; i++) {
     optEnterFrames.push(optCursor);
-    optCursor += Math.ceil((optDurations[i] ?? 2) * fps);
+    optCursor += Math.ceil((optDurations[i] ?? 2) * fps) + optPauseFrames;
   }
 
-  const timerStart  = optCursor + TIMER_GAP;
+  const timerStart  = optCursor + timerGapFrames;
   const revealFrame = timerStart + Math.ceil(timerSeconds * fps);
   const funnyStart  = revealFrame + DING_OFFSET + Math.ceil(aTtsDuration * fps);
-  const exitStart   = funnyStart + Math.ceil(funnyDuration * fps) + ANSWER_BUFFER;
+  const exitStart   = funnyStart + Math.ceil(funnyDuration * fps) + ansBufferFrames;
   const totalFrames = exitStart + FADE_OUT;
 
   /* ── Entry animations ── */

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
   LayoutDashboard, Sparkles, Database, Film,
   Download, Trash2, RefreshCw, Upload, Search,
-  Plus, Pencil, Check, X, ChevronDown, Play, Layers,
+  Plus, Pencil, Check, X, ChevronDown, Play, Layers, BookMarked,
 } from "lucide-react";
 
 const API = "/api";
@@ -208,13 +208,37 @@ function GeneratePanel({ categories, toast }) {
     category: "", subcategory: "", questionCount: 5, theme: "neon",
     questionTime: 10, revealAnswer: true, avoidDays: 30,
     backgroundStyle: "particles", music: "none",
+    introMessage: "", outroMessage: "",
+    timingSettings: { pauseBetweenOptions: 0, pauseBeforeTimer: 0.67, answerHold: 2.5 },
   });
   const [busy, setBusy] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const catObj = categories.find((c) => c.name === cfg.category);
   const subcats = catObj?.subcategories ?? [];
 
   const set = (k, v) => setCfg((p) => ({ ...p, [k]: v }));
+  const setTiming = (k, v) => setCfg((p) => ({ ...p, timingSettings: { ...p.timingSettings, [k]: v } }));
+
+  const applyTemplate = (tpl) => {
+    const s = tpl.settings ?? {};
+    setCfg((p) => ({
+      ...p,
+      ...(s.category        !== undefined ? { category:        s.category }        : {}),
+      ...(s.subcategory     !== undefined ? { subcategory:     s.subcategory }     : {}),
+      ...(s.questionCount   !== undefined ? { questionCount:   s.questionCount }   : {}),
+      ...(s.questionTime    !== undefined ? { questionTime:    s.questionTime }    : {}),
+      ...(s.theme           !== undefined ? { theme:           s.theme }           : {}),
+      ...(s.backgroundStyle !== undefined ? { backgroundStyle: s.backgroundStyle } : {}),
+      ...(s.music           !== undefined ? { music:           s.music }           : {}),
+      ...(s.revealAnswer    !== undefined ? { revealAnswer:    s.revealAnswer }    : {}),
+      ...(s.avoidDays       !== undefined ? { avoidDays:       s.avoidDays }       : {}),
+      ...(s.introMessage    !== undefined ? { introMessage:    s.introMessage }    : {}),
+      ...(s.outroMessage    !== undefined ? { outroMessage:    s.outroMessage }    : {}),
+      ...(s.timingSettings  !== undefined ? { timingSettings:  { ...p.timingSettings, ...s.timingSettings } } : {}),
+    }));
+    toast("success", `Template "${tpl.name}" applied`);
+  };
 
   /* target-duration helper: auto-sets questionCount based on minutes.
      Per-question time ≈ timer + overhead:
@@ -313,6 +337,77 @@ function GeneratePanel({ categories, toast }) {
             <div className="form-group">
               <label className="form-label">Avoid repeat within (days): {cfg.avoidDays}</label>
               <input type="range" className="form-range" min={0} max={90} step={5} value={cfg.avoidDays} onChange={(e) => set("avoidDays", Number(e.target.value))} />
+            </div>
+
+            {/* ── Template loader ── */}
+            <TemplateLoader onApply={applyTemplate} toast={toast} cfg={cfg} />
+
+            {/* ── Advanced settings toggle ── */}
+            <div>
+              <button
+                className="btn btn-ghost btn-sm"
+                style={{ width: "100%", justifyContent: "space-between" }}
+                onClick={() => setShowAdvanced((v) => !v)}
+              >
+                <span>Advanced Settings</span>
+                <ChevronDown size={14} style={{ transform: showAdvanced ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+              </button>
+
+              {showAdvanced && (
+                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 18, padding: "16px", borderRadius: "var(--r)", background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: "var(--text-3)", textTransform: "uppercase" }}>Timing</div>
+
+                  <div className="form-group">
+                    <label className="form-label">Pause between options: {cfg.timingSettings.pauseBetweenOptions.toFixed(1)}s</label>
+                    <input type="range" className="form-range" min={0} max={3} step={0.1}
+                      value={cfg.timingSettings.pauseBetweenOptions}
+                      onChange={(e) => setTiming("pauseBetweenOptions", Number(e.target.value))} />
+                    <div style={{ fontSize: 11, color: "var(--text-3)" }}>Extra silence inserted between each option read-out (default 0s)</div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Pause before timer: {cfg.timingSettings.pauseBeforeTimer.toFixed(1)}s</label>
+                    <input type="range" className="form-range" min={0} max={3} step={0.1}
+                      value={cfg.timingSettings.pauseBeforeTimer}
+                      onChange={(e) => setTiming("pauseBeforeTimer", Number(e.target.value))} />
+                    <div style={{ fontSize: 11, color: "var(--text-3)" }}>Gap after last option before countdown starts (default 0.67s)</div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Answer hold time: {cfg.timingSettings.answerHold.toFixed(1)}s</label>
+                    <input type="range" className="form-range" min={1} max={10} step={0.5}
+                      value={cfg.timingSettings.answerHold}
+                      onChange={(e) => setTiming("answerHold", Number(e.target.value))} />
+                    <div style={{ fontSize: 11, color: "var(--text-3)" }}>How long the revealed answer stays on screen after funny feedback (default 2.5s)</div>
+                  </div>
+
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: "var(--text-3)", textTransform: "uppercase", marginTop: 4 }}>Messages</div>
+
+                  <div className="form-group">
+                    <label className="form-label">Intro message</label>
+                    <textarea
+                      className="form-input"
+                      rows={3}
+                      style={{ resize: "vertical", fontFamily: "inherit" }}
+                      placeholder={`Welcome to the ${cfg.subcategory || cfg.category || "…"} quiz! Get ready for ${cfg.questionCount} exciting questions! Let's go!`}
+                      value={cfg.introMessage}
+                      onChange={(e) => set("introMessage", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Outro / final message</label>
+                    <textarea
+                      className="form-input"
+                      rows={3}
+                      style={{ resize: "vertical", fontFamily: "inherit" }}
+                      placeholder="Wow, you made it through the whole quiz! Amazing effort! Please smash that subscribe button and hit the bell icon!"
+                      value={cfg.outroMessage}
+                      onChange={(e) => set("outroMessage", e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -415,6 +510,190 @@ function GeneratePanel({ categories, toast }) {
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════
+   TEMPLATE LOADER (inline picker inside GeneratePanel)
+   ════════════════════════════════════════════════════════ */
+function TemplateLoader({ onApply, toast, cfg }) {
+  const [templates, setTemplates] = useState([]);
+  const [saveName, setSaveName] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const load = useCallback(async () => {
+    try { setTemplates(await api("/templates")); } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleSave = async () => {
+    if (!saveName.trim()) { toast("warning", "Enter a template name"); return; }
+    setSaving(true);
+    try {
+      await api("/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: saveName.trim(), settings: cfg }),
+      });
+      toast("success", `Template "${saveName.trim()}" saved`);
+      setSaveName("");
+      load();
+    } catch (e) { toast("error", "Save failed", e.message); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: "var(--text-3)", textTransform: "uppercase" }}>Templates</div>
+
+      {templates.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {templates.map((t) => (
+            <button key={t.id} className="btn btn-ghost btn-sm" onClick={() => onApply(t)}
+              title={`Load template: ${t.name}`}>
+              <BookMarked size={12} />{t.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <input
+          className="form-input"
+          placeholder="Save current settings as template…"
+          value={saveName}
+          onChange={(e) => setSaveName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSave()}
+          style={{ flex: 1 }}
+        />
+        <button className="btn btn-ghost btn-sm" onClick={handleSave} disabled={saving}>
+          {saving ? <div className="btn-spinner" /> : <Plus size={13} />}
+          Save
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════
+   TEMPLATES PANEL (full management tab)
+   ════════════════════════════════════════════════════════ */
+function TemplatesPanel({ toast }) {
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { setTemplates(await api("/templates")); }
+    catch (e) { toast("error", "Failed to load templates", e.message); }
+    finally { setLoading(false); }
+  }, [toast]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleDelete = async (id) => {
+    try {
+      await api(`/templates/${id}`, { method: "DELETE" });
+      toast("success", "Template deleted");
+      load();
+    } catch (e) { toast("error", "Delete failed", e.message); }
+  };
+
+  const handleRename = async (id) => {
+    if (!editName.trim()) return;
+    try {
+      await api(`/templates/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: editName.trim() }),
+      });
+      setEditId(null);
+      toast("success", "Template renamed");
+      load();
+    } catch (e) { toast("error", "Rename failed", e.message); }
+  };
+
+  const fmt = (v) => (typeof v === "number" ? v : JSON.stringify(v));
+
+  return (
+    <div className="panel">
+      <div className="card">
+        <div className="card-header">
+          <div>
+            <div className="card-title">Video Settings Templates</div>
+            <div className="card-subtitle">Save and reuse your favourite video configurations</div>
+          </div>
+          <button className="btn btn-ghost btn-sm" onClick={load}><RefreshCw size={13} />Refresh</button>
+        </div>
+
+        {loading && <div style={{ padding: "40px 0", textAlign: "center", color: "var(--text-3)" }}>Loading…</div>}
+
+        {!loading && templates.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">📋</div>
+            <div className="empty-title">No templates yet</div>
+            <div className="empty-desc">Go to Generate → save your settings as a template to reuse them.</div>
+          </div>
+        )}
+
+        {!loading && templates.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {templates.map((t) => {
+              const s = t.settings ?? {};
+              const timing = s.timingSettings ?? {};
+              const theme = THEMES[s.theme] ?? THEMES.neon;
+              return (
+                <div key={t.id} style={{ display: "flex", gap: 16, alignItems: "flex-start", padding: "14px 16px", borderRadius: "var(--r)", background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+                  {/* colour swatch */}
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: theme.grad, flexShrink: 0 }} />
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {editId === t.id ? (
+                      <div className="flex gap-2" style={{ marginBottom: 8 }}>
+                        <input className="form-input" value={editName} onChange={(e) => setEditName(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && handleRename(t.id)} style={{ flex: 1 }} autoFocus />
+                        <button className="btn btn-sm btn-primary" onClick={() => handleRename(t.id)}><Check size={12} /></button>
+                        <button className="btn btn-sm btn-ghost" onClick={() => setEditId(null)}><X size={12} /></button>
+                      </div>
+                    ) : (
+                      <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text)", marginBottom: 6 }}>{t.name}</div>
+                    )}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", fontSize: 12, color: "var(--text-3)" }}>
+                      {s.theme           && <span>🎨 {s.theme}</span>}
+                      {s.backgroundStyle && <span>✨ {s.backgroundStyle}</span>}
+                      {s.music           && s.music !== "none" && <span>🎵 {s.music}</span>}
+                      {s.questionCount   !== undefined && <span>❓ {s.questionCount} questions</span>}
+                      {s.questionTime    !== undefined && <span>⏱ {s.questionTime}s</span>}
+                      {s.category        && <span>📁 {s.category}{s.subcategory ? ` / ${s.subcategory}` : ""}</span>}
+                      {(timing.pauseBetweenOptions ?? 0) > 0 && <span>⏸ opts+{timing.pauseBetweenOptions}s</span>}
+                      {timing.pauseBeforeTimer !== undefined && timing.pauseBeforeTimer !== 0.67 && <span>⏸ pre-timer {timing.pauseBeforeTimer}s</span>}
+                      {timing.answerHold !== undefined && timing.answerHold !== 2.5 && <span>🔒 hold {timing.answerHold}s</span>}
+                      {s.introMessage    && <span>🗣 custom intro</span>}
+                      {s.outroMessage    && <span>🗣 custom outro</span>}
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--text-3)", marginTop: 4 }}>
+                      Saved {t.createdAt ? new Date(t.createdAt).toLocaleDateString() : "—"}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2" style={{ flexShrink: 0 }}>
+                    <button className="btn btn-sm btn-ghost" onClick={() => { setEditId(t.id); setEditName(t.name); }}>
+                      <Pencil size={12} />
+                    </button>
+                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(t.id)}>
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -845,6 +1124,7 @@ const NAV = [
   { id: "dashboard", label: "Dashboard",  icon: <LayoutDashboard size={18} /> },
   { id: "generate",  label: "Generate",   icon: <Sparkles size={18} /> },
   { id: "bulk",      label: "Bulk",       icon: <Layers size={18} /> },
+  { id: "templates", label: "Templates",  icon: <BookMarked size={18} /> },
   { id: "questions", label: "Questions",  icon: <Database size={18} /> },
   { id: "videos",    label: "Videos",     icon: <Film size={18} /> },
 ];
@@ -899,10 +1179,11 @@ export default function App() {
 
   const PAGE_TITLES = {
     dashboard: "Dashboard",
-    generate: "Generate Video",
+    generate:  "Generate Video",
     questions: "Question Bank",
-    videos: "My Videos",
-    bulk: "Bulk Generate",
+    videos:    "My Videos",
+    bulk:      "Bulk Generate",
+    templates: "Templates",
   };
 
   return (
@@ -975,6 +1256,9 @@ export default function App() {
         )}
         {tab === "bulk" && (
           <BulkGeneratePanel categories={categories} toast={toast} />
+        )}
+        {tab === "templates" && (
+          <TemplatesPanel toast={toast} />
         )}
         {tab === "questions" && (
           <QuestionsPanel toast={toast} />

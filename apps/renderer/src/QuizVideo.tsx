@@ -16,6 +16,7 @@ export const QuizVideo: React.FC<VideoInputProps> = ({
   subcategory,
   audioFiles = {},
   audioDurations,
+  timingSettings,
   backgroundStyle = "particles",
   music = "none",
   apiBase = "http://localhost:4001",
@@ -30,7 +31,7 @@ export const QuizVideo: React.FC<VideoInputProps> = ({
     const optsDur  = audioDurations?.opts?.[i] ?? [2, 2, 2, 2];
     const aDur     = audioDurations?.a?.[i] ?? 4;
     const funnyDur = audioDurations?.funny?.[i] ?? 4;
-    const frames   = questionSceneFrames(qDur, optsDur, aDur, funnyDur, questionTime);
+    const frames   = questionSceneFrames(qDur, optsDur, aDur, funnyDur, questionTime, timingSettings);
     const from     = cursor;
     cursor += frames;
     return { q, i, from, frames, qTtsDuration: qDur, optDurations: optsDur, aTtsDuration: aDur, funnyDuration: funnyDur };
@@ -70,6 +71,7 @@ export const QuizVideo: React.FC<VideoInputProps> = ({
             audioFiles={audioFiles}
             apiBase={apiBase}
             backgroundStyle={backgroundStyle}
+            timingSettings={timingSettings}
           />
         </Sequence>
       ))}

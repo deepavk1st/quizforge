@@ -67,6 +67,13 @@ db.exec(`
     UNIQUE(question_id, video_id)
   );
 
+  CREATE TABLE IF NOT EXISTS templates (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name       TEXT    NOT NULL,
+    settings   TEXT    NOT NULL DEFAULT '{}',
+    created_at TEXT    NOT NULL
+  );
+
   CREATE INDEX IF NOT EXISTS idx_q_cat     ON questions(category);
   CREATE INDEX IF NOT EXISTS idx_q_subcat  ON questions(category, subcategory);
   CREATE INDEX IF NOT EXISTS idx_q_used    ON questions(used_count);
@@ -78,5 +85,8 @@ db.exec(`
 /* ── Safe column migrations (ignore if already exist) ───── */
 try { db.exec("ALTER TABLE video_jobs ADD COLUMN background_style TEXT NOT NULL DEFAULT 'particles'"); } catch {}
 try { db.exec("ALTER TABLE video_jobs ADD COLUMN music TEXT NOT NULL DEFAULT 'none'"); } catch {}
+try { db.exec("ALTER TABLE video_jobs ADD COLUMN timing_settings TEXT NOT NULL DEFAULT '{}'"); } catch {}
+try { db.exec("ALTER TABLE video_jobs ADD COLUMN intro_message TEXT NOT NULL DEFAULT ''"); } catch {}
+try { db.exec("ALTER TABLE video_jobs ADD COLUMN outro_message TEXT NOT NULL DEFAULT ''"); } catch {}
 
 export default db;

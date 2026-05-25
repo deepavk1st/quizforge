@@ -166,6 +166,9 @@ app.post("/videos/generate", async (req, res) => {
       avoidDays = 30,
       backgroundStyle = "particles",
       music = "none",
+      timingSettings = {},
+      introMessage = "",
+      outroMessage = "",
     } = req.body;
 
     if (!category) return res.status(400).json({ error: "category is required" });
@@ -180,6 +183,9 @@ app.post("/videos/generate", async (req, res) => {
       avoidDays: parseInt(avoidDays, 10),
       backgroundStyle,
       music,
+      timingSettings,
+      introMessage,
+      outroMessage,
     });
 
     enqueueJob(job.id);
@@ -220,6 +226,9 @@ app.post("/videos/bulk-generate", async (req, res) => {
         avoidDays:       parseInt(cfg.avoidDays ?? 30, 10),
         backgroundStyle: cfg.backgroundStyle || "particles",
         music:           cfg.music           || "none",
+        timingSettings:  cfg.timingSettings  ?? {},
+        introMessage:    cfg.introMessage    ?? "",
+        outroMessage:    cfg.outroMessage    ?? "",
       });
       enqueueJob(job.id);
       created.push(job);
@@ -228,6 +237,33 @@ app.post("/videos/bulk-generate", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+/* ── Templates ──────────────────────────────────────────── */
+app.get("/templates", (_, res) => {
+  try { res.json(storage.getTemplates()); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post("/templates", (req, res) => {
+  try {
+    const { name, settings } = req.body;
+    res.status(201).json(storage.createTemplate(name, settings));
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+
+app.put("/templates/:id", (req, res) => {
+  try {
+    const { name, settings } = req.body;
+    res.json(storage.updateTemplate(parseInt(req.params.id, 10), name, settings));
+  } catch (e) { res.status(404).json({ error: e.message }); }
+});
+
+app.delete("/templates/:id", (req, res) => {
+  try {
+    storage.deleteTemplate(parseInt(req.params.id, 10));
+    res.json({ ok: true });
+  } catch (e) { res.status(404).json({ error: e.message }); }
 });
 
 /* Music tracks available */
