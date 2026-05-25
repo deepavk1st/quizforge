@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.remotion/
+apps/api/public/
+*.mp4
+*.log
+.env
+apps/api/data/quizforge.db
+apps/api/data/quizforge.db-shm
+apps/api/data/quizforge.db-wal
+apps/api/data/question-usage.json

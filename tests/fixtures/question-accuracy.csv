@@ -1,0 +1,8 @@
+question_keyword,expected_correct_fragment,notes
+speed of light,299,The speed of light is 299792458 m/s (match on "299" prefix in formatted number)
+chemical symbol for Gold,Au,Gold symbol Au from Latin Aurum
+longest river,Nile,Nile River is 6650km the longest
+first to gross over $1 billion,Titanic,Titanic 1997 was first to gross 1 billion
+women the right to vote,New Zealand,New Zealand was first in 1893
+construction of the Great Wall,221 BC,Construction began under Qin Shi Huang 221 BC
+HTML stand for,HyperText Markup Language,HTML = HyperText Markup Language

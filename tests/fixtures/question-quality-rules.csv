@@ -1,0 +1,15 @@
+rule_id,rule_name,severity,field,check,expected_value,auto_fixable,description
+Q001,Question text not empty,error,questionText,not_empty,,false,Every question must have non-empty questionText
+Q002,Question minimum length,warning,questionText,min_length,10,false,questionText should be at least 10 characters
+Q003,Question maximum length,warning,questionText,max_length,200,false,questionText should not exceed 200 chars
+Q004,Question starts with capital,warning,questionText,starts_with_capital,,true,First character of questionText should be uppercase
+Q005,Question ends with punctuation,warning,questionText,ends_with_punctuation,,true,questionText should end with ? or ! or .
+Q006,No double spaces,warning,questionText,no_double_spaces,,true,questionText must not contain consecutive spaces
+Q007,All options non-empty,error,option1|option2|option3|option4,not_empty,,false,All 4 answer options must have text
+Q008,No duplicate options,error,options,no_duplicates,,false,Answer options must be unique (case-insensitive)
+Q009,Valid correctOption,error,correctOption,in_range,1-4,false,correctOption must be integer 1 to 4
+Q010,Correct option not empty,error,options,correct_not_empty,,false,The option indicated by correctOption must not be empty
+Q011,Valid difficulty,warning,difficulty,in_list,easy|medium|hard,false,difficulty field must be easy medium or hard
+Q012,Options minimum length,warning,option1|option2|option3|option4,min_length,2,false,Each option should be at least 2 characters
+Q013,Options start with capital,info,option1|option2|option3|option4,starts_with_capital,,false,Options should start with capital letter or number
+Q014,Valid image URL format,warning,imageUrl,valid_url_or_empty,,false,imageUrl must be empty or a valid http/https URL

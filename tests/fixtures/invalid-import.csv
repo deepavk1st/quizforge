@@ -1,0 +1,6 @@
+category,subcategory,question,option1,option2,option3,option4,correct_option,difficulty,tags,image_url,explanation
+,Physics,Missing category question,A,B,C,D,1,easy,,,"Category is empty - should be rejected"
+Science,,Missing subcategory,,B,C,D,1,easy,,,"questionText is empty - should be rejected"
+Science,Physics,Valid question but wrong correct_option,A,B,C,D,9,easy,,,"correct_option=9 is out of range 1-4"
+Science,Physics,Duplicate options question,Same,Same,Different,Other,1,easy,,,"Options 1 and 2 are duplicates"
+Science,Physics,Ok question,A,B,C,D,notanumber,easy,,,"correct_option is not a number"

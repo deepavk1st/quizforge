@@ -1,0 +1,15 @@
+test_id,name,method,path,body_json,expected_status,check_field,check_type,expected_value,description
+API001,Health check,GET,/health,,200,ok,equals,true,API should return healthy status
+API002,Get categories,GET,/categories,,200,,array_not_empty,,Should return non-empty categories array
+API003,Get all questions,GET,/questions,,200,items,is_array,,Should return questions.items array
+API004,Filter questions by category,GET,/questions?category=Science,,200,items,is_array,,Filter by category returns array
+API005,Filter questions by subcategory,GET,/questions?category=Science&subcategory=Physics,,200,items,is_array,,Filter by subcategory returns array
+API006,CSV template download,GET,/csv-template,,200,,has_content,,Template CSV should have content
+API007,Create valid question,POST,/questions,"{""category"":""Test"",""subcategory"":""Unit"",""questionText"":""Is this a test question?"",""option1"":""Yes"",""option2"":""No"",""option3"":""Maybe"",""option4"":""Never"",""correctOption"":1,""difficulty"":""easy""}",201,id,is_number,,Created question should have numeric id
+API008,Get questions after create,GET,/questions?category=Test,,200,total,is_number,,Total count should be numeric
+API009,Update question text,PUT,/questions/:last_id,"{""questionText"":""Is this an updated test question?""}",200,questionText,contains,updated,Updated field should be reflected
+API010,Delete question,DELETE,/questions/:last_id,,200,ok,equals,true,Should delete the question cleanly
+API011,Get non-existent question,DELETE,/questions/999999,,404,error,exists,,Non-existent id should return 404
+API012,Generate without category,POST,/videos/generate,"{}",400,error,exists,,Missing category should be a 400 error
+API013,Get videos list,GET,/videos,,200,,is_array,,Videos endpoint should return an array
+API014,Delete non-existent video,DELETE,/videos/999999,,404,error,exists,,Non-existent video id should return 404

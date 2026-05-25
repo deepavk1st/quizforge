@@ -1,0 +1,6 @@
+category,subcategory,question,option1,option2,option3,option4,correct_option,difficulty,tags,image_url,explanation
+Science,Physics,What force keeps planets in orbit around the Sun?,Gravity,Magnetism,Nuclear force,Friction,1,easy,physics|solar system,,Gravity is the force that keeps planets in orbit
+Science,Chemistry,What element has the symbol Fe?,Iron,Francium,Fluorine,Fermium,1,easy,chemistry|elements,,Fe comes from the Latin word Ferrum meaning iron
+History,Modern,In what year did World War II end?,1945,1944,1946,1943,1,easy,history|war,,WWII ended in 1945 with the surrender of Germany and Japan
+Geography,World,What is the capital of Australia?,Canberra,Sydney,Melbourne,Perth,1,medium,geography|capitals,,Canberra not Sydney is the capital of Australia
+Technology,AI,What does GPT stand for?,Generative Pre-trained Transformer,General Processing Technology,Graph Processing Tool,Global Parameter Training,1,hard,ai|nlp,,GPT = Generative Pre-trained Transformer

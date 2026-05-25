@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1, "category": "Science", "subcategory": "Physics",
+    "questionText": "What is the speed of light in a vacuum?",
+    "option1": "299,792,458 m/s", "option2": "199,792,458 m/s",
+    "option3": "399,792,458 m/s", "option4": "100,000,000 m/s",
+    "correctOption": 1, "difficulty": "medium",
+    "explanation": "The speed of light in a vacuum is exactly 299,792,458 m/s.",
+    "tags": ["physics", "constants"]
+  },
+  {
+    "id": 2, "category": "Science", "subcategory": "Physics",
+    "questionText": "Which planet has the most moons in our solar system?",
+    "option1": "Jupiter", "option2": "Saturn",
+    "option3": "Uranus", "option4": "Neptune",
+    "correctOption": 2, "difficulty": "medium",
+    "explanation": "Saturn has 146 confirmed moons, the most of any planet.",
+    "tags": ["astronomy", "planets"]
+  },
+  {
+    "id": 3, "category": "Science", "subcategory": "Chemistry",
+    "questionText": "What is the chemical symbol for Gold?",
+    "option1": "Go", "option2": "Gd",
+    "option3": "Au", "option4": "Ag",
+    "correctOption": 3, "difficulty": "easy",
+    "explanation": "Gold's symbol Au comes from the Latin word 'Aurum'.",
+    "tags": ["elements", "periodic table"]
+  },
+  {
+    "id": 4, "category": "History", "subcategory": "Ancient",
+    "questionText": "In which year did the construction of the Great Wall of China begin?",
+    "option1": "221 BC", "option2": "100 AD",
+    "option3": "500 BC", "option4": "1200 AD",
+    "correctOption": 1, "difficulty": "hard",
+    "explanation": "Construction began around 221 BC under Qin Shi Huang.",
+    "tags": ["china", "architecture"]
+  },
+  {
+    "id": 5, "category": "History", "subcategory": "Modern",
+    "questionText": "Which country was the first to give women the right to vote?",
+    "option1": "USA", "option2": "UK",
+    "option3": "New Zealand", "option4": "France",
+    "correctOption": 3, "difficulty": "medium",
+    "explanation": "New Zealand granted women the right to vote in 1893.",
+    "tags": ["politics", "women"]
+  },
+  {
+    "id": 6, "category": "Geography", "subcategory": "World",
+    "questionText": "What is the longest river in the world?",
+    "option1": "Amazon", "option2": "Mississippi",
+    "option3": "Yangtze", "option4": "Nile",
+    "correctOption": 4, "difficulty": "easy",
+    "explanation": "The Nile River stretches approximately 6,650 km.",
+    "tags": ["rivers", "africa"]
+  },
+  {
+    "id": 7, "category": "Technology", "subcategory": "Programming",
+    "questionText": "What does HTML stand for?",
+    "option1": "HyperText Markup Language", "option2": "High-level Text Machine Language",
+    "option3": "HyperTransfer Markup Language", "option4": "HyperText Modern Language",
+    "correctOption": 1, "difficulty": "easy",
+    "explanation": "HTML stands for HyperText Markup Language.",
+    "tags": ["web", "programming"]
+  },
+  {
+    "id": 8, "category": "Movies", "subcategory": "Box Office",
+    "questionText": "Which film became the first to gross over $1 billion worldwide?",
+    "option1": "Titanic", "option2": "Jurassic Park",
+    "option3": "The Lion King", "option4": "Star Wars",
+    "correctOption": 1, "difficulty": "medium",
+    "explanation": "Titanic (1997) was the first film to gross over $1 billion.",
+    "tags": ["box office", "records"]
+  }
+]

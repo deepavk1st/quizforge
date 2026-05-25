@@ -1,0 +1,168 @@
+import { ThemeName } from "./types";
+
+export interface ThemeConfig {
+  name: ThemeName;
+  background: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+  text: string;
+  textMuted: string;
+  surface: string;
+  badgeGradient: string;
+  correctColor: string;
+  correctGlow: string;
+  progressGradient: string;
+  timerColor: string;
+  fontFamily: string;
+  particleColor: string;
+  gridColor: string;
+}
+
+export const THEMES: Record<ThemeName, ThemeConfig> = {
+  neon: {
+    name: "neon",
+    background: "linear-gradient(135deg, #0a0014 0%, #0d001f 50%, #001a2c 100%)",
+    primary: "#a855f7",
+    secondary: "#06b6d4",
+    accent: "#ec4899",
+    text: "#f1f5f9",
+    textMuted: "#94a3b8",
+    surface: "rgba(168,85,247,0.12)",
+    badgeGradient: "linear-gradient(135deg, #7c3aed, #ec4899)",
+    correctColor: "#10b981",
+    correctGlow: "rgba(16,185,129,0.5)",
+    progressGradient: "linear-gradient(90deg, #7c3aed, #ec4899, #06b6d4)",
+    timerColor: "#a855f7",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(168,85,247,0.7)",
+    gridColor: "rgba(168,85,247,0.1)",
+  },
+  sunset: {
+    name: "sunset",
+    background: "linear-gradient(135deg, #1a0600 0%, #2d1200 50%, #1a0000 100%)",
+    primary: "#f97316",
+    secondary: "#fbbf24",
+    accent: "#ef4444",
+    text: "#fef3e8",
+    textMuted: "#fbbf24",
+    surface: "rgba(249,115,22,0.15)",
+    badgeGradient: "linear-gradient(135deg, #f97316, #ef4444)",
+    correctColor: "#22c55e",
+    correctGlow: "rgba(34,197,94,0.5)",
+    progressGradient: "linear-gradient(90deg, #f97316, #fbbf24, #ef4444)",
+    timerColor: "#f97316",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(249,115,22,0.7)",
+    gridColor: "rgba(249,115,22,0.1)",
+  },
+  ocean: {
+    name: "ocean",
+    background: "linear-gradient(135deg, #001220 0%, #001a30 50%, #000d20 100%)",
+    primary: "#0ea5e9",
+    secondary: "#06b6d4",
+    accent: "#38bdf8",
+    text: "#e0f2fe",
+    textMuted: "#7dd3fc",
+    surface: "rgba(14,165,233,0.15)",
+    badgeGradient: "linear-gradient(135deg, #0ea5e9, #06b6d4)",
+    correctColor: "#10b981",
+    correctGlow: "rgba(16,185,129,0.5)",
+    progressGradient: "linear-gradient(90deg, #0ea5e9, #06b6d4, #38bdf8)",
+    timerColor: "#0ea5e9",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(14,165,233,0.7)",
+    gridColor: "rgba(14,165,233,0.1)",
+  },
+  forest: {
+    name: "forest",
+    background: "linear-gradient(135deg, #0a1400 0%, #0f2000 50%, #071000 100%)",
+    primary: "#22c55e",
+    secondary: "#84cc16",
+    accent: "#10b981",
+    text: "#f0fdf4",
+    textMuted: "#86efac",
+    surface: "rgba(34,197,94,0.15)",
+    badgeGradient: "linear-gradient(135deg, #22c55e, #84cc16)",
+    correctColor: "#22c55e",
+    correctGlow: "rgba(34,197,94,0.5)",
+    progressGradient: "linear-gradient(90deg, #22c55e, #84cc16, #10b981)",
+    timerColor: "#22c55e",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(34,197,94,0.7)",
+    gridColor: "rgba(34,197,94,0.1)",
+  },
+  /* ── New vibrant themes ────────────────────────────────── */
+  galaxy: {
+    name: "galaxy",
+    background: "linear-gradient(135deg, #020010 0%, #0a0030 40%, #000820 100%)",
+    primary: "#e040fb",
+    secondary: "#00e5ff",
+    accent: "#ffea00",
+    text: "#ffffff",
+    textMuted: "#b0bec5",
+    surface: "rgba(224,64,251,0.15)",
+    badgeGradient: "linear-gradient(135deg, #e040fb, #00e5ff)",
+    correctColor: "#00e676",
+    correctGlow: "rgba(0,230,118,0.6)",
+    progressGradient: "linear-gradient(90deg, #e040fb, #00e5ff, #ffea00)",
+    timerColor: "#e040fb",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(224,64,251,0.8)",
+    gridColor: "rgba(0,229,255,0.1)",
+  },
+  candy: {
+    name: "candy",
+    background: "linear-gradient(135deg, #1a0020 0%, #200015 50%, #001020 100%)",
+    primary: "#ff4081",
+    secondary: "#ffff00",
+    accent: "#00e5ff",
+    text: "#ffffff",
+    textMuted: "#f8bbd0",
+    surface: "rgba(255,64,129,0.15)",
+    badgeGradient: "linear-gradient(135deg, #ff4081, #ffff00)",
+    correctColor: "#00e676",
+    correctGlow: "rgba(0,230,118,0.6)",
+    progressGradient: "linear-gradient(90deg, #ff4081, #ffff00, #00e5ff)",
+    timerColor: "#ff4081",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(255,64,129,0.75)",
+    gridColor: "rgba(255,255,0,0.08)",
+  },
+  fire: {
+    name: "fire",
+    background: "linear-gradient(135deg, #120000 0%, #200500 50%, #0a0000 100%)",
+    primary: "#ff6d00",
+    secondary: "#ffea00",
+    accent: "#ff1744",
+    text: "#fff8e1",
+    textMuted: "#ffccbc",
+    surface: "rgba(255,109,0,0.18)",
+    badgeGradient: "linear-gradient(135deg, #ff6d00, #ff1744)",
+    correctColor: "#76ff03",
+    correctGlow: "rgba(118,255,3,0.55)",
+    progressGradient: "linear-gradient(90deg, #ff6d00, #ffea00, #ff1744)",
+    timerColor: "#ff6d00",
+    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+    particleColor: "rgba(255,109,0,0.8)",
+    gridColor: "rgba(255,109,0,0.08)",
+  },
+  retro: {
+    name: "retro",
+    background: "linear-gradient(135deg, #001020 0%, #002030 50%, #001525 100%)",
+    primary: "#00ffcc",
+    secondary: "#ff6ec7",
+    accent: "#ffe600",
+    text: "#e0ffe8",
+    textMuted: "#80ffcc",
+    surface: "rgba(0,255,204,0.12)",
+    badgeGradient: "linear-gradient(135deg, #00ffcc, #ff6ec7)",
+    correctColor: "#00ffcc",
+    correctGlow: "rgba(0,255,204,0.6)",
+    progressGradient: "linear-gradient(90deg, #00ffcc, #ffe600, #ff6ec7)",
+    timerColor: "#00ffcc",
+    fontFamily: '"Courier New", Courier, monospace',
+    particleColor: "rgba(0,255,204,0.7)",
+    gridColor: "rgba(0,255,204,0.12)",
+  },
+};

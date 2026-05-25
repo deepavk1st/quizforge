@@ -1,0 +1,8 @@
+[
+  { "name": "Science",    "subcategories": ["Physics", "Chemistry", "Biology", "Astronomy"] },
+  { "name": "History",    "subcategories": ["Ancient", "Medieval", "Modern", "American"] },
+  { "name": "Geography",  "subcategories": ["World", "Europe", "Asia", "Americas"] },
+  { "name": "Movies",     "subcategories": ["Box Office", "Directors", "Actors", "Genres"] },
+  { "name": "Sports",     "subcategories": ["Football", "Basketball", "Tennis", "Olympics"] },
+  { "name": "Technology", "subcategories": ["AI", "Programming", "Gadgets", "Internet"] }
+]
